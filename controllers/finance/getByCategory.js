@@ -4,13 +4,14 @@ const { UserTransaction, Auth } = require("../../models");
 const getByCategory = async (req, res) => {
     const { year, month, category } = req.params;
     const { _id } = req.user;
-    const monthNum = Number(month);
-    const yearNum = Number(year);
+    const monthNum = Number(month)
+    const yearNum = Number(year)
+    const user = await Auth.findById(_id)
     
     const sumByCategory = await UserTransaction.aggregate([
         {
             $match: {
-                owner: _id,
+                owner: user._id,
                 month: monthNum,
                 year: yearNum,
                 category: category,
@@ -37,6 +38,7 @@ const getByCategory = async (req, res) => {
             },
         },
     ]);
+  
   
     res.json({
         status: "success",

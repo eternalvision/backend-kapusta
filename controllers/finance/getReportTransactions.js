@@ -4,13 +4,14 @@ const { UserTransaction, Auth } = require("../../models");
 const getReportTransactions = async (req, res) => {
   const { _id } = req.user
   const { year, month } = req.params;
-  const monthNum = Number(month);
-  const yearNum = Number(year);
+  const monthNum = Number(month)
+  const yearNum = Number(year)
+  const user = await Auth.findById(_id)
   
   const incomeTransaction = await UserTransaction.aggregate([
     {
       $match: {
-        owner: _id,
+        owner: user._id,
         month: monthNum,
         year: yearNum,
         type: "income",
@@ -18,22 +19,32 @@ const getReportTransactions = async (req, res) => {
     },
     {
       $group: {
-                _id: null,              
-                income: { $sum: '$amount' }
-            }
+        _id: {
+          month: '$month',
+          year: '$year',
+          description: '$description',
+          category: '$category',
+          amount: '$amount',
+        },
+      },
     },
+
     {
       $project: {
         _id: 0,
-         income: "$income"
+        group: '$_id',
       },
     },
   ]);
 
+  const income = incomeTransaction
+    .map((item) => item.group.amount)
+    .reduce((a, b) => a + b, 0)
+
   const consumptionTransaction = await UserTransaction.aggregate([
     {
       $match: {
-        owner: _id,
+        owner: user._id,
         month: monthNum,
         year: yearNum,
         type: "consumption",
@@ -41,22 +52,33 @@ const getReportTransactions = async (req, res) => {
     },
     {
       $group: {
-                _id: null,              
-                consumption: { $sum: '$amount' }
-            }
+        _id: {
+          month: '$month',
+          year: '$year',
+          description: '$description',
+          category: '$category',
+          amount: '$amount',
+        },
+      },
     },
+
     {
       $project: {
         _id: 0,
-         consumption: "$consumption"
+        group: '$_id',
       },
     },
   ]);
 
+  const consumption = consumptionTransaction
+    .map((item) => item.group.amount)
+    .reduce((a, b) => a + b, 0)
+  
+
   const sumByCategoryIncome = await UserTransaction.aggregate([
     {
       $match: {
-        owner: _id,
+        owner: user._id,
         month: monthNum,
         year: yearNum,
         type: 'income',
@@ -85,7 +107,7 @@ const getReportTransactions = async (req, res) => {
   const sumByCategoryConsumption = await UserTransaction.aggregate([
     {
       $match: {
-        owner: _id,
+        owner: user._id,
         month: monthNum,
         year: yearNum,
         type: 'consumption',
@@ -111,13 +133,79 @@ const getReportTransactions = async (req, res) => {
     },
   ]);
   
+  const sumDescriptionIncome = await UserTransaction.aggregate([
+      {
+        $match: {
+          owner: user._id,
+          month: monthNum,
+          year: yearNum,
+          type: 'income',
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: '$month',
+            year: '$year',
+            category: '$category',
+            description: '$description',
+            type: '$type',
+          },
+          totalDescription: { $sum: '$amount' },
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          group: '$_id.description',
+          totalDescription: 1,
+        },
+      },
+  ])
+  
+  const sumDescriptionConsumption = await UserTransaction.aggregate([
+      {
+        $match: {
+          owner: user._id,
+          month: monthNum,
+          year: yearNum,
+          type: 'consumption',
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: '$month',
+            year: '$year',
+            category: '$category',
+            description: '$description',
+            type: '$type',
+          },
+          totalDescription: { $sum: '$amount' },
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          group: '$_id.description',
+          totalDescription: 1,
+        },
+      },
+    ])
+  
   res.json({
     status: "success",
     code: 200,
+    income,
+    consumption,
     incomeTransaction,
     consumptionTransaction,
     sumByCategoryIncome,
     sumByCategoryConsumption,
+    sumDescriptionIncome,
+    sumDescriptionConsumption
   });
 };
 

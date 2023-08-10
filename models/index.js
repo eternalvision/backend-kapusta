@@ -1,7 +1,13 @@
-const { UserTransaction } = require("./finance");
-const { Auth } = require('./auth');
+const {
+  User,
+  userJoiSchema,
+  updatebalanceJoiSchema,
+  userJoiSchemaLogin,
+} = require("./user");
 
 module.exports = {
-  UserTransaction,
-  Auth
+  User,
+  userJoiSchema,
+  updatebalanceJoiSchema,
+  userJoiSchemaLogin,
 };

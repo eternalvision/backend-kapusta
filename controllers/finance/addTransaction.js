@@ -1,9 +1,8 @@
-const { NotFound } = require("http-errors");
-const { removeZeroString, calculateBalanceForAdd } = require("../../helpers");
-const { UserTransaction, Auth } = require("../../models");
+const { removeZeroString } = require("../../helpers");
+const { UserTransaction } = require("../../models");
 
 const addUserTransaction = async (req, res) => {
-  const { _id, balance } = req.user;
+  const { _id } = req.user;
 
   const { type, description, amount, category, day, month, year } = req.body;
   
@@ -21,20 +20,12 @@ const addUserTransaction = async (req, res) => {
     ...transaction,
     owner: _id,
   });
-  if (!newTransaction) {
-    throw new NotFound(`User with ${_id} not found`);
-  };
 
-  const currentBalance = calculateBalanceForAdd(balance, type, amount);
-  const userWithUpdatedBalance = await Auth.findByIdAndUpdate(_id, { balance: currentBalance }, { new: true });
-
+  console.log(newTransaction);
   res.json({
     status: "success",
     code: 200,
-    data: {
-      newTransaction,
-      balance: userWithUpdatedBalance.balance,
-    }
+    data: newTransaction,
   });
 };
 

@@ -1,14 +1,21 @@
-const { NotFound } = require("http-errors");
+//? библиотека для генерации ошибок
+const createError = require("http-errors");
+
 const { UserTransaction } = require("../../models");
 
 const getUserById = async (req, res) => {
-  const { _id } = req.user;
-
+  //? найти по id
+  const { id } = req.params;
   const result = await UserTransaction.find({
-    owner: _id,
-  }); 
+    owner: id,
+  });
+  //? проверка на существование id
   if (!result) {
-    throw new NotFound(`User with ${_id} did't make any transactions`);
+    // const error = new Error(`Contact with id=${id} not found`);
+    // error.status = 404;
+    // throw error;
+
+    throw createError(404, `User with id=${id} not found`);
   }
 
   res.json({

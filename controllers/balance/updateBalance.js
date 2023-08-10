@@ -3,14 +3,19 @@ const { Auth } = require("../../models");
 
 const updateBalance = async (req, res) => {
   const { _id } = req.user;
-  const { balance } = req.body;
-  
-  const user = await Auth.findByIdAndUpdate(_id, { balance }, { new: true });
+
+  const user = await Auth.findByIdAndUpdate(_id, req.body, { new: true });
   if (!user) {
     throw new NotFound(`User with ${_id} not found`);
   }
 
-  res.status(200).json({ balance: user.balance });
+  res.json({
+    status: "success",
+    code: 200,
+    data: {
+      user,
+    },
+  });
 };
 
 module.exports = updateBalance;

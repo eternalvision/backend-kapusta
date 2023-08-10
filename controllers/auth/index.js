@@ -1,11 +1,21 @@
-const register = require('./register')
-const login = require('./login')
-const logout = require('./logout')
-const getCurrent = require('./getCurrent')
+const {
+  signUp,
+  logIn,
+  logout,
+  userBalanceUpdate,
+  getUserBalance,
+  getCurrent,
+  googleAuth,
+  googleRedirect,
+} = require("./userControllers");
 
 module.exports = {
-  register,
-  login,
+  signUp,
+  logIn,
   logout,
-  getCurrent
-}
+  userBalanceUpdate,
+  getUserBalance,
+  getCurrent,
+  googleAuth,
+  googleRedirect,
+};

@@ -14,7 +14,7 @@ const category = [
   "others",
   "hobbies",
   "salary",
-  "additional_income",
+  "additional-income",
 ];
 
 const transactionSchema = Schema(
