@@ -1,11 +1,9 @@
-const sendMessage = require("./sendMail");
 const removeZeroString = require("./removeZeroString");
-const HttpCode = require("./constants");
-const sendSuccessRes = require("./sendSuccessRes");
+const calculateBalanceForAdd = require("./calculateBalanceForAdd");
+const calculateBalanceForRemove = require("./calculateBalanceForRemove");
 
 module.exports = {
-  sendMessage,
   removeZeroString,
-  HttpCode,
-  sendSuccessRes,
+  calculateBalanceForAdd,
+  calculateBalanceForRemove
 };

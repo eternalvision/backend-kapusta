@@ -14,10 +14,13 @@ const router = express.Router();
 router.post("/", auth, validation(joiSchemaTransaction), ctrlWrapper(ctrl.addTransaction));
 
 //TODO Обновление баланса по id
-router.put("/:id/balance", auth, validation(joiBalanceSchema), ctrlWrapper(ctrlBalance.updateBalance));
+router.put("/balance", auth, validation(joiBalanceSchema), ctrlWrapper(ctrlBalance.updateBalance));
+
+//TODO Вывод баланса по id
+router.get("/getBalance", auth, ctrlWrapper(ctrlBalance.getBalance));
 
 //TODO Вывод транзакций owner
-router.get("/:id", auth, ctrlWrapper(ctrl.getTransactionById));
+router.get("/", auth, ctrlWrapper(ctrl.getTransactionById));
 
 //TODO Вывод транзакций для сводки
 router.get("/summary/:type/:year", auth, ctrlWrapper(ctrl.geTransactionForPeriod));
@@ -28,7 +31,7 @@ router.get("/period/:month/:year/:type", auth, ctrlWrapper(ctrl.getAllBySomeTime
 //TODO Вывод транзакций по типу
 router.get("/type/:type", auth, ctrlWrapper(ctrl.getAllByType));
 
-//TODO Вывод отчета по транзакциям за месяц
+//TODO Вывод отчета по транзакциям
 router.get("/report/:year/:month", auth, ctrlWrapper(ctrl.getReportTransactions));
 
 //TODO Удаление транзакций id

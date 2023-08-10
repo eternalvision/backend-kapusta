@@ -1,6 +1,0 @@
-DB_HOST=mongodb+srv://Sasha:UPmX11tOezXAYjD4@db-contacts.dshpnys.mongodb.net/db-contacts?retryWrites=true&w=majority
-DB_USER=Sasha
-DB_PASSWORD=UPmX11tOezXAYjD4
-DB_NAME=db-contacts
-SECRET_KEY=aBcD9379992yOklmN
-SENDGRID_API_KEY=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
